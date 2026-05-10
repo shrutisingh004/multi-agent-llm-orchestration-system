@@ -1,7 +1,3 @@
-"""
-Master orchestrator: routes between agents dynamically.
-Agents are NEVER called directly by each other - only through this.
-"""
 from __future__ import annotations
 import asyncio
 import json
@@ -32,10 +28,6 @@ class Orchestrator:
         self.budget_manager = ContextBudgetManager()
 
     async def run(self, ctx: SharedContext, emit: Callable = None) -> SharedContext:
-        """
-        Run the full multi-agent pipeline.
-        emit(event_type, agent_id, data) is called for SSE streaming.
-        """
         async def _emit(event_type: str, agent_id: str, data: dict):
             if emit:
                 await emit(event_type, agent_id, data)
