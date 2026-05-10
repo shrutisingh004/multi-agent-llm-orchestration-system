@@ -1,15 +1,8 @@
-"""
-Meta-agent: reads eval failures, proposes prompt rewrites.
-Rewrites are stored but NOT automatically applied.
-Human approval required via /approve-rewrite endpoint.
-"""
 from __future__ import annotations
 import difflib
 import json
-
 from app.agents.llm import call_llm_json
 from app.agents.prompts import get_prompt, set_prompt
-
 
 def _parse_json(text: str) -> dict:
     text = text.strip()
@@ -31,10 +24,6 @@ def compute_diff(original: str, proposed: str) -> str:
 
 
 async def run_meta_agent(eval_results: list[dict], worst_dimension: str) -> dict:
-    """
-    Analyze eval failures, identify worst prompt, propose rewrite.
-    Returns dict with proposed rewrite details.
-    """
     # Find which agent dimension failed most
     dimension_scores: dict[str, list[float]] = {}
     for r in eval_results:
@@ -98,7 +87,6 @@ Propose a rewrite that addresses these failures.
         "justification": justification,
         "avg_score_before": avg_scores[worst_dim],
     }
-
 
 def apply_approved_rewrite(agent_id: str, proposed_prompt: str):
     """Apply an approved prompt rewrite to the live prompts."""
