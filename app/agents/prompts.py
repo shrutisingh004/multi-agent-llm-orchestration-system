@@ -1,8 +1,3 @@
-"""
-Central store of all agent prompts.
-These are loaded by agents and can be overridden by approved rewrites.
-"""
-
 PROMPTS = {
     "orchestrator": """You are the master orchestrator of a multi-agent system.
 Given a user query, decide which sub-agents to invoke and in what order.
@@ -59,7 +54,6 @@ Return JSON: {
 }
 """,
 }
-
 
 def get_prompt(agent_id: str) -> str:
     return PROMPTS.get(agent_id, "")
