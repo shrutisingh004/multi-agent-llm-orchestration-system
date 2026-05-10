@@ -4,21 +4,28 @@ A containerized, production-grade multi-agent pipeline with a self-improving eva
 
 ---
 
-## Quick Start (5 minutes)
+## Setup & Run
+
+### 1 · Clone the repo
 
 ```bash
 git clone https://github.com/shrutisingh004/multi-agent-llm-orchestration-system.git
 cd multi-agent-system
+```
 
-# 1. Set your Gemini API key (free at https://aistudio.google.com/app/apikey)
+### 2. Set your Gemini API key (free at https://aistudio.google.com/app/apikey)
+```bash
 cp .env.example .env
 # Then open .env and put your real Gemini API key
+```
 
-# 2. Start everything
+### 3. Start everything
+```bash
 docker compose up --build
+```
 
-# 3. API is live at http://localhost:8000
-# 4. Log viewer (pgAdmin) at http://localhost:5050 (admin@admin.com / admin)
+### 4. API is live at `http://localhost:8000`
+### 5. Log viewer (pgAdmin) at http://localhost:5050 (admin@admin.com / admin)
 ```
 
 No manual steps after `docker compose up`.
