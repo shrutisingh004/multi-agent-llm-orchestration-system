@@ -1,7 +1,3 @@
-"""
-All sub-agents. Agents read/write SharedContext via the orchestrator.
-Agents never call each other directly.
-"""
 from __future__ import annotations
 import json
 import time
@@ -18,7 +14,6 @@ from app.tools.tools import call_tool
 
 
 def _parse_json(text: str) -> dict:
-    """Safe JSON parse - strip markdown fences."""
     text = text.strip()
     if text.startswith("```"):
         lines = text.split("\n")
@@ -42,7 +37,6 @@ class BaseAgent:
         return ok
 
     async def _call_tool_with_retry(self, tool_name: str, ctx: SharedContext, max_retries: int = 2, **kwargs) -> dict:
-        """Call a tool with up to 2 retries on failure. Each attempt is logged."""
         result = None
         for attempt in range(1, max_retries + 2):
             start = time.time()
@@ -230,7 +224,6 @@ class SynthesisAgent(BaseAgent):
 
 
 class CompressionAgent(BaseAgent):
-    """Compresses context when budget is exceeded. Lossless for structured data."""
     async def run(self, ctx: SharedContext) -> str:
         history_text = json.dumps(ctx.session_history)
         prompt = f"{get_prompt('compression')}\n\nHistory:\n{history_text}"
