@@ -13,7 +13,6 @@ from datetime import datetime, timezone
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [worker] %(message)s")
 logger = logging.getLogger(__name__)
 
-
 async def process_job(job_data: dict):
     job_id = job_data.get("job_id", str(uuid.uuid4()))
     query = job_data.get("query", "")
@@ -38,7 +37,6 @@ async def process_job(job_data: dict):
 
     logger.info(f"Job {job_id} completed.")
 
-
 async def main():
     await init_db()
     r = aioredis.from_url(REDIS_URL, decode_responses=True)
@@ -54,7 +52,6 @@ async def main():
         except Exception as e:
             logger.error(f"Worker error: {e}")
             await asyncio.sleep(2)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
