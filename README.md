@@ -24,9 +24,8 @@ cp .env.example .env
 docker compose up --build
 ```
 
-### 4. API is live at `http://localhost:8000`
+### 4. API is live at http://localhost:8000
 ### 5. Log viewer (pgAdmin) at http://localhost:5050 (admin@admin.com / admin)
-```
 
 No manual steps after `docker compose up`.
 
