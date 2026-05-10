@@ -28,7 +28,6 @@ async def lifespan(app: FastAPI):
     await init_db()
     yield
 
-
 app = FastAPI(
     title="Multi-Agent LLM Orchestration System",
     description="Production-grade multi-agent pipeline with self-improving evaluation loop",
@@ -38,9 +37,7 @@ app = FastAPI(
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-
 # Request/Response models
-
 class QueryRequest(BaseModel):
     query: str
 
@@ -53,7 +50,6 @@ class RerunRequest(BaseModel):
 
 
 # Helpers
-
 async def _save_job_events(db: AsyncSession, ctx: SharedContext, job_id: str):
     """Persist agent events and tool calls to DB."""
     for event in ctx.routing_log:
@@ -94,9 +90,7 @@ async def _save_job_events(db: AsyncSession, ctx: SharedContext, job_id: str):
         ))
     await db.commit()
 
-
 # Endpoint 1: Submit query with SSE streaming
-
 @app.post("/query", summary="Submit a query and receive a real-time SSE stream of agent activity")
 async def submit_query(req: QueryRequest, db: AsyncSession = Depends(get_db)):
     if not req.query.strip():
@@ -163,7 +157,6 @@ async def submit_query(req: QueryRequest, db: AsyncSession = Depends(get_db)):
 
 
 # Endpoint 2: Full execution trace
-
 @app.get("/trace/{job_id}", summary="Retrieve the full execution trace for a completed job")
 async def get_trace(job_id: str, db: AsyncSession = Depends(get_db)):
     job = await db.get(Job, job_id)
@@ -223,7 +216,6 @@ async def get_trace(job_id: str, db: AsyncSession = Depends(get_db)):
 
 
 # Endpoint 3: Latest eval summary
-
 @app.get("/eval/latest", summary="Retrieve the latest eval run summary by category and dimension")
 async def get_latest_eval(db: AsyncSession = Depends(get_db)):
     q = await db.execute(select(EvalRun).order_by(desc(EvalRun.run_at)).limit(1))
@@ -273,7 +265,6 @@ async def get_latest_eval(db: AsyncSession = Depends(get_db)):
 
 
 # Endpoint 4: Approve/reject prompt rewrite
-
 @app.post("/rewrite/approve", summary="Human approval or rejection of a pending prompt rewrite")
 async def approve_rewrite(req: ApprovalRequest, db: AsyncSession = Depends(get_db)):
     if req.decision not in ("approve", "reject"):
@@ -311,7 +302,6 @@ async def approve_rewrite(req: ApprovalRequest, db: AsyncSession = Depends(get_d
 
 
 # Endpoint 5: Targeted re-eval
-
 @app.post("/eval/rerun", summary="Trigger evaluation (full or on failed cases) using latest approved prompts")
 async def trigger_eval(req: RerunRequest, db: AsyncSession = Depends(get_db)):
     failed_ids = req.failed_ids or None  # None = run all 15
