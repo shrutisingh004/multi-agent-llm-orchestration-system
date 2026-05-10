@@ -5,14 +5,11 @@ from datetime import datetime, timezone
 from typing import Optional
 from app.config import ASYNC_DATABASE_URL
 
-
 engine = create_async_engine(ASYNC_DATABASE_URL, echo=False)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
-
 class Base(DeclarativeBase):
     pass
-
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -23,7 +20,6 @@ class Job(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     events: Mapped[list["AgentEvent"]] = relationship("AgentEvent", back_populates="job")
-
 
 class AgentEvent(Base):
     __tablename__ = "agent_events"
@@ -40,7 +36,6 @@ class AgentEvent(Base):
     policy_violation: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     job: Mapped["Job"] = relationship("Job", back_populates="events")
 
-
 class ToolCall(Base):
     __tablename__ = "tool_calls"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -54,14 +49,12 @@ class ToolCall(Base):
     accepted: Mapped[bool] = mapped_column(Boolean, default=True)
     timestamp: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
-
 class EvalRun(Base):
     __tablename__ = "eval_runs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     run_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     summary: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     results: Mapped[list["EvalResult"]] = relationship("EvalResult", back_populates="run")
-
 
 class EvalResult(Base):
     __tablename__ = "eval_results"
@@ -75,7 +68,6 @@ class EvalResult(Base):
     scores: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     prompts_snapshot: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     run: Mapped["EvalRun"] = relationship("EvalRun", back_populates="results")
-
 
 class PromptRewrite(Base):
     __tablename__ = "prompt_rewrites"
@@ -92,11 +84,9 @@ class PromptRewrite(Base):
     reviewed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     delta: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
-
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
 
 async def get_db():
     async with AsyncSessionLocal() as session:
